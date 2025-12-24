@@ -1,82 +1,123 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Search } from 'lucide-react'
+import { Search, ArrowLeft, Sparkles } from 'lucide-react'
 
 function App() {
-  const [query, setQuery] = useState('')
   const [movies, setMovies] = useState([])
   const [allMovies, setAllMovies] = useState([])
+  const [query, setQuery] = useState('')
+  const [selectedMovie, setSelectedMovie] = useState(null)
+  const [recommendations, setRecommendations] = useState([])
 
-  // 1. Fetch movies from your Python Backend when the page loads
   useEffect(() => {
     fetch('http://127.0.0.1:8000/movies')
       .then(response => response.json())
       .then(data => {
-        setAllMovies(data) // Save the full list
-        setMovies(data)    // Show the full list initially
+        setAllMovies(data)
+        setMovies(data)
       })
-      .catch(error => console.error("Error connecting to backend:", error))
   }, [])
 
-  // 2. Filter movies when you type
   const handleSearch = (e) => {
     const text = e.target.value
     setQuery(text)
     if (text === '') {
       setMovies(allMovies)
     } else {
-      const filtered = allMovies.filter(movie => 
-        movie.title.toLowerCase().includes(text.toLowerCase())
-      )
-      setMovies(filtered)
+      setMovies(allMovies.filter(m => m.title.toLowerCase().includes(text.toLowerCase())))
     }
   }
 
+  const selectMovie = async (movie) => {
+    setSelectedMovie(movie)
+    const response = await fetch(`http://127.0.0.1:8000/recommend?title=${movie.title}`)
+    const data = await response.json()
+    setRecommendations(data)
+  }
+
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#1a1a1a', color: 'white', padding: '20px' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#0f0f0f', color: 'white', fontFamily: 'Inter, sans-serif', padding: '40px' }}>
       
-      {/* Header */}
-      <header style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', background: 'linear-gradient(to right, #ec4899, #8b5cf6)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
-          CineMind
+      <header style={{ textAlign: 'center', marginBottom: '60px' }}>
+        <h1 style={{ fontSize: '4rem', fontWeight: '900', margin: 0, letterSpacing: '-2px', background: 'linear-gradient(to right, #ec4899, #8b5cf6)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+          CineMind.
         </h1>
+        <p style={{ color: '#666', marginTop: '10px', fontSize: '1.2rem' }}>AI-Powered Movie Discovery</p>
       </header>
 
-      {/* Search Bar */}
-      <div style={{ maxWidth: '600px', margin: '0 auto 40px auto', position: 'relative' }}>
-        <Search style={{ position: 'absolute', left: '15px', top: '12px', color: 'gray' }} />
-        <input 
-          type="text" 
-          value={query}
-          onChange={handleSearch}
-          placeholder="Search for movies..." 
-          style={{
-            width: '100%',
-            padding: '12px 12px 12px 45px',
-            borderRadius: '25px',
-            border: 'none',
-            fontSize: '1.1rem',
-            backgroundColor: '#333',
-            color: 'white'
-          }}
-        />
-      </div>
-
-      {/* Movie Results Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-        {movies.map(movie => (
-          <motion.div 
-            key={movie.id}
-            whileHover={{ scale: 1.05 }}
-            style={{ backgroundColor: '#2a2a2a', padding: '20px', borderRadius: '10px' }}
+      {selectedMovie ? (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <button 
+            onClick={() => setSelectedMovie(null)}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#222', border: 'none', color: '#fff', padding: '12px 24px', borderRadius: '30px', cursor: 'pointer', marginBottom: '40px', fontSize: '1rem', transition: '0.2s' }}
           >
-            <h3 style={{ margin: '0 0 10px 0' }}>{movie.title}</h3>
-            <p style={{ color: '#aaa', margin: '0' }}>{movie.genre}</p>
-            <span style={{ display: 'block', marginTop: '10px', color: '#fbbf24' }}>★ {movie.rating}</span>
-          </motion.div>
-        ))}
-      </div>
+            <ArrowLeft size={20} /> Back to Search
+          </button>
 
+          <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: '700' }}>Because you liked <span style={{ color: '#ec4899' }}>{selectedMovie.title}</span>...</h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '40px', maxWidth: '1200px', margin: '0 auto' }}>
+            {recommendations.map((movie, index) => (
+              <motion.div 
+                key={movie.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+                style={{ backgroundColor: '#18181b', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
+              >
+                <div style={{ height: '400px', overflow: 'hidden' }}>
+                  <img src={movie.poster} alt={movie.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <div style={{ padding: '25px' }}>
+                  <h3 style={{ margin: '0 0 10px 0', fontSize: '1.4rem' }}>{movie.title}</h3>
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                     <span style={{ fontSize: '0.8rem', color: '#a78bfa', backgroundColor: 'rgba(139, 92, 246, 0.1)', padding: '5px 10px', borderRadius: '15px' }}>{movie.genre}</span>
+                     <span style={{ fontSize: '0.8rem', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '4px' }}><Sparkles size={12}/> {movie.rating}</span>
+                  </div>
+                  <p style={{ color: '#a1a1aa', fontSize: '0.95rem', lineHeight: '1.6' }}>{movie.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      ) : (
+        <>
+          <div style={{ maxWidth: '600px', margin: '0 auto 60px auto', position: 'relative' }}>
+            <Search style={{ position: 'absolute', left: '25px', top: '20px', color: '#555' }} size={24} />
+            <input 
+              type="text" 
+              placeholder="Search for a movie..." 
+              value={query}
+              onChange={handleSearch}
+              style={{ width: '100%', padding: '20px 20px 20px 65px', borderRadius: '50px', border: 'none', fontSize: '1.2rem', backgroundColor: '#1a1a1a', color: 'white', outline: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '30px', maxWidth: '1200px', margin: '0 auto' }}>
+            {movies.map(movie => (
+              <motion.div 
+                key={movie.id}
+                whileHover={{ y: -10, transition: { duration: 0.2 } }}
+                onClick={() => selectMovie(movie)}
+                style={{ cursor: 'pointer', borderRadius: '20px', overflow: 'hidden', position: 'relative' }}
+              >
+                <div style={{ height: '380px', width: '100%' }}>
+                    <img src={movie.poster} alt={movie.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '20px' }} />
+                </div>
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px', background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{movie.title}</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
+                        <span style={{ color: '#ccc', fontSize: '0.9rem' }}>{movie.genre}</span>
+                        <span style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '0.9rem' }}>★ {movie.rating}</span>
+                    </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
