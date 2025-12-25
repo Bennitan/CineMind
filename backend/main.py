@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,7 +20,7 @@ with open('movies.json', 'r') as f:
 
 # 2. Prepare the AI Model
 # Combine description and genre into a single string for analysis
-descriptions = [movie['description'] + " " + movie['genre'] for movie in movies_data]
+descriptions = [movie['description'] + " " + movie['genre'] + " " + movie['title'] for movie in movies_data]
 
 # Convert text to numbers (Vectors)
 vectorizer = TfidfVectorizer(stop_words='english')
@@ -37,20 +37,36 @@ def read_root():
 def get_movies():
     return movies_data
 
-# The Magic AI Endpoint
+# === NEW: Smart Search Endpoint ===
+@app.get("/search")
+def search_movies(query: str):
+    # 1. Convert user's search text into numbers (Vector)
+    query_vec = vectorizer.transform([query])
+
+    # 2. Compare user's search vector with all movie vectors
+    similarity_scores = cosine_similarity(query_vec, tfidf_matrix).flatten()
+
+    # 3. Get the indices of the top matches
+    # This sorts the scores from highest to lowest
+    related_indices = similarity_scores.argsort()[::-1]
+
+    # 4. Return top 5 matches (only if they have some similarity)
+    results = []
+    for i in related_indices[:5]:
+        if similarity_scores[i] > 0.1:  # Filter out irrelevant results
+            results.append(movies_data[i])
+            
+    return results
+
 @app.get("/recommend")
 def recommend_movies(title: str = Query(..., description="The movie title to get recommendations for")):
-    # Find the movie index
     movie_idx = next((index for (index, d) in enumerate(movies_data) if d["title"].lower() == title.lower()), None)
 
     if movie_idx is None:
         return {"error": "Movie not found"}
 
-    # Calculate similarity
     sim_scores = list(enumerate(cosine_sim[movie_idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    
-    # Get top 3 recommendations (skipping the first one because it is the movie itself)
     sim_scores = sim_scores[1:4]
 
     recommendations = []

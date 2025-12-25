@@ -4,30 +4,43 @@ import { Search, ArrowLeft, Sparkles } from 'lucide-react'
 
 function App() {
   const [movies, setMovies] = useState([])
-  const [allMovies, setAllMovies] = useState([])
   const [query, setQuery] = useState('')
   const [selectedMovie, setSelectedMovie] = useState(null)
   const [recommendations, setRecommendations] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
 
+  // 1. Fetch all movies on startup
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/movies')
-      .then(response => response.json())
-      .then(data => {
-        setAllMovies(data)
-        setMovies(data)
-      })
+    fetchMovies()
   }, [])
 
-  const handleSearch = (e) => {
-    const text = e.target.value
-    setQuery(text)
-    if (text === '') {
-      setMovies(allMovies)
-    } else {
-      setMovies(allMovies.filter(m => m.title.toLowerCase().includes(text.toLowerCase())))
-    }
+  const fetchMovies = async () => {
+    const response = await fetch('http://127.0.0.1:8000/movies')
+    const data = await response.json()
+    setMovies(data)
   }
 
+  // 2. Smart Search Logic (Talks to Python)
+  const handleSearch = async (e) => {
+    e.preventDefault() // Stop page refresh
+    if (!query.trim()) {
+      fetchMovies() // Reset if empty
+      return
+    }
+    
+    setIsSearching(true)
+    try {
+      // Ask Python to find movies based on meaning
+      const response = await fetch(`http://127.0.0.1:8000/search?query=${query}`)
+      const data = await response.json()
+      setMovies(data)
+    } catch (error) {
+      console.error("Search failed:", error)
+    }
+    setIsSearching(false)
+  }
+
+  // 3. Recommendation Logic
   const selectMovie = async (movie) => {
     setSelectedMovie(movie)
     const response = await fetch(`http://127.0.0.1:8000/recommend?title=${movie.title}`)
@@ -38,6 +51,7 @@ function App() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0f0f0f', color: 'white', fontFamily: 'Inter, sans-serif', padding: '40px' }}>
       
+      {/* HEADER */}
       <header style={{ textAlign: 'center', marginBottom: '60px' }}>
         <h1 style={{ fontSize: '4rem', fontWeight: '900', margin: 0, letterSpacing: '-2px', background: 'linear-gradient(to right, #ec4899, #8b5cf6)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
           CineMind.
@@ -46,6 +60,7 @@ function App() {
       </header>
 
       {selectedMovie ? (
+        // === VIEW 2: RECOMMENDATION SCREEN ===
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <button 
             onClick={() => setSelectedMovie(null)}
@@ -83,39 +98,45 @@ function App() {
           </div>
         </motion.div>
       ) : (
+        // === VIEW 1: SEARCH SCREEN ===
         <>
-          <div style={{ maxWidth: '600px', margin: '0 auto 60px auto', position: 'relative' }}>
+          <form onSubmit={handleSearch} style={{ maxWidth: '600px', margin: '0 auto 60px auto', position: 'relative' }}>
             <Search style={{ position: 'absolute', left: '25px', top: '20px', color: '#555' }} size={24} />
             <input 
               type="text" 
-              placeholder="Search for a movie..." 
+              placeholder="Describe a movie (e.g., 'scary hotel' or 'space travel')..." 
               value={query}
-              onChange={handleSearch}
+              onChange={(e) => setQuery(e.target.value)}
               style={{ width: '100%', padding: '20px 20px 20px 65px', borderRadius: '50px', border: 'none', fontSize: '1.2rem', backgroundColor: '#1a1a1a', color: 'white', outline: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
             />
-          </div>
+            <button type="submit" style={{ display: 'none' }}>Search</button>
+          </form>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '30px', maxWidth: '1200px', margin: '0 auto' }}>
-            {movies.map(movie => (
-              <motion.div 
-                key={movie.id}
-                whileHover={{ y: -10, transition: { duration: 0.2 } }}
-                onClick={() => selectMovie(movie)}
-                style={{ cursor: 'pointer', borderRadius: '20px', overflow: 'hidden', position: 'relative' }}
-              >
-                <div style={{ height: '380px', width: '100%' }}>
-                    <img src={movie.poster} alt={movie.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '20px' }} />
-                </div>
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px', background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)' }}>
-                    <h3 style={{ margin: 0, fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{movie.title}</h3>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
-                        <span style={{ color: '#ccc', fontSize: '0.9rem' }}>{movie.genre}</span>
-                        <span style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '0.9rem' }}>★ {movie.rating}</span>
-                    </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {isSearching ? (
+             <p style={{ textAlign: 'center', color: '#666' }}>Thinking...</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '30px', maxWidth: '1200px', margin: '0 auto' }}>
+              {movies.map(movie => (
+                <motion.div 
+                  key={movie.id}
+                  whileHover={{ y: -10, transition: { duration: 0.2 } }}
+                  onClick={() => selectMovie(movie)}
+                  style={{ cursor: 'pointer', borderRadius: '20px', overflow: 'hidden', position: 'relative' }}
+                >
+                  <div style={{ height: '380px', width: '100%' }}>
+                      <img src={movie.poster} alt={movie.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '20px' }} />
+                  </div>
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px', background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)' }}>
+                      <h3 style={{ margin: 0, fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{movie.title}</h3>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5px' }}>
+                          <span style={{ color: '#ccc', fontSize: '0.9rem' }}>{movie.genre}</span>
+                          <span style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '0.9rem' }}>★ {movie.rating}</span>
+                      </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>

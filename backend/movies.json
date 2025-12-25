@@ -1,50 +1,90 @@
 [
-    {
-        "id": 1,
-        "title": "Inception",
-        "genre": "Sci-Fi",
-        "rating": 8.8,
-        "poster": "https://upload.wikimedia.org/wikipedia/en/2/2e/Inception_%282010%29_theatrical_poster.jpg",
-        "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
-    },
-    {
-        "id": 2,
-        "title": "The Dark Knight",
-        "genre": "Action",
-        "rating": 9.0,
-        "poster": "https://upload.wikimedia.org/wikipedia/en/1/1c/The_Dark_Knight_%282008_film%29.jpg",
-        "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."
-    },
-    {
-        "id": 3,
-        "title": "Interstellar",
-        "genre": "Sci-Fi",
-        "rating": 8.6,
-        "poster": "https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg",
-        "description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. Space travel, time dilation, and father-daughter relationships."
-    },
-    {
-        "id": 4,
-        "title": "Parasite",
-        "genre": "Thriller",
-        "rating": 8.6,
-        "poster": "https://upload.wikimedia.org/wikipedia/en/5/53/Parasite_%282019_film%29.jpg",
-        "description": "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan."
-    },
-    {
-        "id": 5,
-        "title": "Avengers: Endgame",
-        "genre": "Action",
-        "rating": 8.4,
-        "poster": "https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg",
-        "description": "After the devastating events of Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe."
-    },
-    {
-        "id": 6,
-        "title": "The Matrix",
-        "genre": "Sci-Fi",
-        "rating": 8.7,
-        "poster": "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
-        "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers. Simulation, AI, and fighting."
-    }
+  {
+    "id": 1,
+    "title": "Inception",
+    "genre": "Sci-Fi",
+    "rating": 8.8,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/2/2e/Inception_%282010%29_theatrical_poster.jpg",
+    "description": "A mind-bending sci-fi thriller. A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
+  },
+  {
+    "id": 2,
+    "title": "The Dark Knight",
+    "genre": "Action",
+    "rating": 9.0,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/1/1c/The_Dark_Knight_%282008_film%29.jpg",
+    "description": "A dark and gritty superhero action movie. Batman faces his greatest psychological test against the Joker, who wreaks havoc and chaos on Gotham."
+  },
+  {
+    "id": 3,
+    "title": "Interstellar",
+    "genre": "Sci-Fi",
+    "rating": 8.6,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg",
+    "description": "An epic space travel adventure. A team of explorers travel through a wormhole in space to ensure humanity's survival. Features time dilation, black holes, and father-daughter relationships."
+  },
+  {
+    "id": 4,
+    "title": "Parasite",
+    "genre": "Thriller",
+    "rating": 8.6,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/5/53/Parasite_%282019_film%29.jpg",
+    "description": "A dark social satire about greed and class discrimination. The destitute Kim clan infiltrates the wealthy Park family. Suspenseful and shocking."
+  },
+  {
+    "id": 5,
+    "title": "Avengers: Endgame",
+    "genre": "Action",
+    "rating": 8.4,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg",
+    "description": "The ultimate superhero showdown. The Avengers assemble once more to reverse Thanos' actions and restore balance to the universe. Packed with fights and heroes."
+  },
+  {
+    "id": 6,
+    "title": "The Matrix",
+    "genre": "Sci-Fi",
+    "rating": 8.7,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
+    "description": "A cyberpunk sci-fi classic. A computer hacker learns the true nature of his reality and fights a war against the machine controllers. Features kung-fu and simulation theory."
+  },
+  {
+    "id": 7,
+    "title": "The Hangover",
+    "genre": "Comedy",
+    "rating": 7.7,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/b/bf/The_Hangover_poster.jpg",
+    "description": "A hilarious funny comedy about a bachelor party gone wrong in Las Vegas. Three buddies try to find their missing friend after a wild night they cannot remember."
+  },
+  {
+    "id": 8,
+    "title": "Superbad",
+    "genre": "Comedy",
+    "rating": 7.6,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/8/8b/Superbad_Poster.png",
+    "description": "A funny coming-of-age comedy. Two high school seniors deal with separation anxiety and a wild party plan that goes completely wrong."
+  },
+  {
+    "id": 9,
+    "title": "The Notebook",
+    "genre": "Romance",
+    "rating": 7.8,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/8/86/Posternotebook.jpg",
+    "description": "A heartbreaking and emotional romantic drama. A poor young man falls in love with a rich woman, but social differences drive them apart. A classic love story."
+  },
+  {
+    "id": 10,
+    "title": "Get Out",
+    "genre": "Horror",
+    "rating": 7.7,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/a/a3/Get_Out_poster.png",
+    "description": "A scary psychological horror thriller. A young man visits his girlfriend's parents and uncovers a disturbing and terrifying secret."
+  },
+  {
+    "id": 11,
+    "title": "The Shining",
+    "genre": "Horror",
+    "rating": 8.4,
+    "poster": "https://upload.wikimedia.org/wikipedia/en/1/18/The_Shining_1980.jpg",
+    "description": "A classic scary horror movie. A family stays at an isolated hotel where a sinister presence drives the father to violence. Terrifying and creepy."
+  }
 ]
