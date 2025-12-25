@@ -1,16 +1,36 @@
-# React + Vite
+# 🎬 CineMind AI - Smart Movie Recommender
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**CineMind** is a full-stack AI application that recommends movies based on content similarity and semantic search. Unlike basic keyword search, CineMind uses **Natural Language Processing (NLP)** to understand the user's intent (e.g., searching for *"scary hotel"* instantly finds *The Shining*).
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **🧠 AI-Powered Recommendations:** Uses **Scikit-Learn** to calculate the mathematical similarity between movies based on their plot descriptions and genres.
+* **🔍 Semantic Search:** Users can search by "vibe" or description. The system vectorizes the user's query and finds the closest matching movie plots using Cosine Similarity.
+* **⚡ Modern UI:** Built with **React 18 + Vite** for blazing fast performance and **Framer Motion** for smooth, professional animations.
+* **📡 High-Performance Backend:** A lightweight **FastAPI** server that handles data processing and machine learning inference in real-time.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### **Frontend (The Face)**
+* **React.js** (Component-based UI)
+* **Vite** (Next-gen build tool)
+* **Framer Motion** (Animation library)
+* **Lucide React** (Icons)
 
-## Expanding the ESLint configuration
+### **Backend (The Brain)**
+* **Python 3.10+**
+* **FastAPI** (API Framework)
+* **Scikit-Learn** (Machine Learning Library)
+* **Pandas & NumPy** (Data Manipulation)
+* **Uvicorn** (ASGI Server)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ⚙️ How to Run Locally
+
+Follow these steps to set up CineMind on your own machine.
+
+### **1. Clone the Repository**
+```bash
+git clone [https://github.com/YOUR_USERNAME/CineMind.git](https://github.com/YOUR_USERNAME/CineMind.git)
+cd CineMind
